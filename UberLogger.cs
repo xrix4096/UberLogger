@@ -37,7 +37,7 @@ namespace UberLogger
         /// </summary>
         void Log(LogInfo logInfo);
     }
-    
+
     //Information about a particular frame of a callstack
     [System.Serializable]
     public class LogStackFrame
@@ -201,7 +201,7 @@ namespace UberLogger
         static Logger()
         {
             // Register with Unity's logging system
-#if UNITY_5
+#if UNITY_5 || UNITY_2017
             UberDebug.UnityLog("Register");
             Application.logMessageReceivedThreaded += UnityLogHandler;
 #else
@@ -219,7 +219,7 @@ namespace UberLogger
         {
             UnityLogInternal(logString, stackTrace, logType);
         }
-    
+
         static public double GetTime()
         {
             long ticks = DateTime.Now.Ticks;
@@ -266,7 +266,7 @@ namespace UberLogger
             }
             return false;
         }
-    
+
 
         /// <summary>
         /// Tries to extract useful information about the log from a Unity stack trace
@@ -392,7 +392,7 @@ namespace UberLogger
                     if (showHideMode == IgnoredUnityMethod.Mode.Show)
                     {
                         var logStackFrame = new LogStackFrame(stackFrame);
-                        
+
                         callstack.Add(logStackFrame);
                     }
                 }
@@ -400,7 +400,7 @@ namespace UberLogger
 
             // Callstack has been processed backwards -- correct order for presentation
             callstack.Reverse();
-        
+
             return false;
         }
 
@@ -447,7 +447,7 @@ namespace UberLogger
                     try
                     {
                         AlreadyLogging = true;
-                    
+
                         var callstack = new List<LogStackFrame>();
                         var unityOnly = GetCallstack(ref callstack);
                         if(unityOnly)
@@ -455,7 +455,7 @@ namespace UberLogger
                             return;
                         }
 
-                        //If we have no useful callstack, fall back to parsing Unity's callstack 
+                        //If we have no useful callstack, fall back to parsing Unity's callstack
                         if(callstack.Count==0)
                         {
                             callstack = GetCallstackFromUnityLog(unityCallStack);
@@ -473,7 +473,7 @@ namespace UberLogger
 
                         string filename = "";
                         int lineNumber = 0;
-                    
+
                         //Finally, parse the error message so we can get basic file and line information
                         if(ExtractInfoFromUnityMessage(unityMessage, ref filename, ref lineNumber))
                         {

@@ -33,7 +33,7 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
         // Repaint();
     }
 
-    
+
     void OnInspectorUpdate()
     {
         // Debug.Log("Update");
@@ -59,14 +59,14 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
         // And, due to Unity serialisation stuff, necessary to do to it here.
         UberLogger.Logger.AddLogger(EditorLogger);
         EditorLogger.AddWindow(this);
-        
-#if UNITY_5
+
+#if UNITY_5 || UNITY_2017
         titleContent.text = "Uber Console";
 #else
         title = "Uber Console";
 
 #endif
-         
+
         ClearSelectedMessage();
 
         SmallErrorIcon = EditorGUIUtility.FindTexture( "d_console.erroricon.sml" ) ;
@@ -90,7 +90,7 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
         GUIStyle unityLogLineEven = null;
         GUIStyle unityLogLineOdd = null;
         GUIStyle unitySmallLogLine = null;
-        
+
         foreach(var style in GUI.skin.customStyles)
         {
             if     (style.name=="CN EntryBackEven")  unityLogLineEven = style;
@@ -117,11 +117,11 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
         DrawPos = Vector2.zero;
         DrawToolbar();
         DrawFilter();
-        
+
         DrawChannels();
 
         float logPanelHeight = CurrentTopPaneHeight-DrawPos.y;
-        
+
         if(Dirty)
         {
             CurrentLogList = EditorLogger.CopyLogInfo();
@@ -288,7 +288,7 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -302,7 +302,7 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
         showMessage = showMessage.Replace(System.Environment.NewLine, " ");
         if(showTimes)
         {
-            showMessage = log.GetTimeStampAsString() + ": " + showMessage; 
+            showMessage = log.GetTimeStampAsString() + ": " + showMessage;
         }
 
         var content = new GUIContent(showMessage, GetIconForLog(log));
@@ -318,7 +318,7 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
 
 
         float buttonY = 0;
-        
+
         System.Text.RegularExpressions.Regex filterRegex = null;
 
         if(!String.IsNullOrEmpty(FilterRegex))
@@ -411,7 +411,7 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
                 ScrollFollowMessages = false;
             }
         }
-        
+
         float logLineX = CollapseBadgeMaxWidth;
 
         //Render all the elements
@@ -435,7 +435,7 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
             {
                 GUI.backgroundColor = Color.white;
             }
-                
+
             //Make all messages single line
             var content = GetLogLineGUIContent(log, ShowTimes);
             var drawRect = new Rect(logLineX, buttonY, contentRect.width, LogListLineHeight);
@@ -572,7 +572,7 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
                     {
                         GUI.backgroundColor = Color.white;
                     }
-                    
+
                     var frame = log.Callstack[c1];
                     var lineRect = new Rect(0, lineY, contentRect.width, lineHeight);
 
@@ -598,7 +598,7 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
                                     LastFrameClickTime = EditorApplication.timeSinceStartup;
                                 }
                             }
-                            
+
                         }
                         else
                         {
@@ -680,13 +680,13 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
         Vector2 size;
         LabelClamped("Filter Regex", GUI.skin.label, out size);
         DrawPos.x += size.x;
-        
+
         string filterRegex = null;
         bool clearFilter = false;
         if(ButtonClamped("Clear", GUI.skin.button, out size))
         {
             clearFilter = true;
-            
+
             GUIUtility.keyboardControl = 0;
             GUIUtility.hotControl = 0;
         }
@@ -706,7 +706,7 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
             FilterRegex = filterRegex;
             MakeDirty = true;
         }
-            
+
         DrawPos.y += size.y;
         DrawPos.x = 0;
     }
@@ -719,7 +719,7 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
         }
 
         var categories = CurrentChannels;
-        
+
         var channelList = new List<string>();
         channelList.Add("All");
         channelList.Add("No Channel");
@@ -736,16 +736,16 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
         CursorChangeRect = new Rect(0, CurrentTopPaneHeight, position.width, DividerHeight);
 
         var oldColor = GUI.color;
-        GUI.color = SizerLineColour; 
+        GUI.color = SizerLineColour;
         GUI.DrawTexture(CursorChangeRect, EditorGUIUtility.whiteTexture);
         GUI.color = oldColor;
         EditorGUIUtility.AddCursorRect(CursorChangeRect,MouseCursor.ResizeVertical);
-         
+
         if( Event.current.type == EventType.mouseDown && CursorChangeRect.Contains(Event.current.mousePosition))
         {
             Resize = true;
         }
-        
+
         //If we've resized, store the new size and force a repaint
         if(Resize)
         {
@@ -774,7 +774,7 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
         {
             return SourceLines;
         }
-        
+
 
         if(frame.FileName==null)
         {
@@ -862,9 +862,9 @@ public class UberLoggerEditorWindow : EditorWindow, UberLoggerEditor.ILoggerWind
     GUIStyle EntryStyleBackOdd;
     string CurrentChannel=null;
     string FilterRegex = null;
-    bool ShowErrors = true; 
-    bool ShowWarnings = true; 
-    bool ShowMessages = true; 
+    bool ShowErrors = true;
+    bool ShowWarnings = true;
+    bool ShowMessages = true;
     int SelectedCallstackFrame = 0;
     bool ShowFrameSource = false;
 

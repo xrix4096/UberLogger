@@ -37,13 +37,13 @@ public class UberLoggerEditor : ScriptableObject, UberLogger.ILogger
         editorDebug.NoErrors = 0;
         editorDebug.NoWarnings = 0;
         editorDebug.NoMessages = 0;
-        
+
         return editorDebug;
     }
 
     public void OnEnable()
     {
-        EditorApplication.playmodeStateChanged += OnPlaymodeStateChanged;
+      EditorApplication.playModeStateChanged += OnPlaymodeStateChanged;
 
         //Make this scriptable object persist between Play sessions
         hideFlags = HideFlags.HideAndDontSave;
@@ -63,8 +63,8 @@ public class UberLoggerEditor : ScriptableObject, UberLogger.ILogger
         }
         WasPlaying = EditorApplication.isPlayingOrWillChangePlaymode;
     }
-    
-    void OnPlaymodeStateChanged()
+
+    void OnPlaymodeStateChanged(PlayModeStateChange state)
     {
         ProcessOnStartClear();
     }
@@ -102,7 +102,7 @@ public class UberLoggerEditor : ScriptableObject, UberLogger.ILogger
 
             LogInfo.Add(logInfo);
         }
-        
+
         if(logInfo.Severity==LogSeverity.Error)
         {
             NoErrors++;
